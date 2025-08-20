@@ -58,6 +58,11 @@ struct AddFriendView: View {
                     }
                     TextField("Interests (comma separated)", text: $interests)
                 }
+                
+                Section(header: Text("Please only enter information about other people if you have their permission. The data is stored locally on your device and is not shared.")){
+                    
+                }
+                .colorMultiply(.red)
             }
             .navigationTitle("Add Friend")
             .toolbar {
@@ -82,4 +87,9 @@ struct AddFriendView: View {
             }
         }
     }
+}
+
+
+#Preview {
+    AddFriendView()
 }

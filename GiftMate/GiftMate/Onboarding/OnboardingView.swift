@@ -8,9 +8,10 @@ private struct OnboardingFeature: Identifiable {
     let color: Color
 }
 
+
 struct OnboardingViewV2: View {
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @Environment(\.presentationMode) var presentationMode
+    @State private var acceptedTerms = false
     
     private let features: [OnboardingFeature] = [
         OnboardingFeature(
@@ -53,18 +54,47 @@ struct OnboardingViewV2: View {
                 }
             }
             
-            Button("Get Started") {
-                presentationMode.wrappedValue.dismiss()
+            VStack(spacing: 16) {
+                // Чекбокс с текстом и ссылками
+                HStack(alignment: .top, spacing: 8) {
+                    Button(action: {
+                        acceptedTerms.toggle()
+                    }) {
+                        Image(systemName: acceptedTerms ? "checkmark.square.fill" : "square")
+                            .font(.title3)
+                            .foregroundColor(acceptedTerms ? .blue : .gray)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("I have read and accept the")
+                        HStack(spacing: 4) {
+                            Link("Privacy Policy", destination: URL(string: "https://sites.google.com/view/wishnestapp/privacy-policy")!)
+                                .foregroundColor(.blue)
+                            Text("and")
+                            Link("Terms of Use", destination: URL(string: "https://sites.google.com/view/wishnestapp/terms-of-use")!)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                }
+                
+                // Кнопка
+                Button("Get Started") {
+                    UserDefaults.standard.set(true, forKey: "isOnboardingShown")
+                    presentationMode.wrappedValue.dismiss()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, 30)
+                .disabled(!acceptedTerms)
+                .opacity(acceptedTerms ? 1.0 : 0.5)
             }
-            .buttonStyle(PrimaryButtonStyle())
             .padding(30)
         }
         .background(Color.themeBackground.ignoresSafeArea())
         .foregroundColor(.themePrimaryText)
     }
 }
-
-
 private struct HeaderView: View {
     var body: some View {
         VStack(spacing: 16) {
@@ -72,7 +102,7 @@ private struct HeaderView: View {
                 .font(.largeTitle)
                 .foregroundColor(.themeSecondaryText)
             
-            Text("GiftMate")
+            Text("WishNest")
                 .font(.system(size: 60, weight: .bold))
                 .foregroundColor(.themeAccentYellow)
                 .shadow(color: .themeAccentYellow.opacity(0.5), radius: 10)

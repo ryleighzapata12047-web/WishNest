@@ -51,7 +51,6 @@ struct MainView: View {
         .onAppear {
             if !UserDefaults.standard.bool(forKey: "isOnboardingShown") {
                 isonboardingShown = true
-                UserDefaults.standard.set(true, forKey: "isOnboardingShown")
             }
         }
         .fullScreenCover(isPresented: $isonboardingShown) {
